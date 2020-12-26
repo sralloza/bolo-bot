@@ -25,12 +25,14 @@ dispatcher.add_handler(CommandHandler("start", send_welcome))  # type: ignore
 dispatcher.add_handler(CommandHandler("version", show_version))  # type: ignore
 dispatcher.add_handler(CommandHandler("unregister", unregister))
 
-dispatcher.add_handler(CommandHandler("bolo", register_bolo))
 dispatcher.add_handler(CommandHandler("ranking", get_ranking))
 
 dispatcher.add_handler(
     ConversationHandler(
-        entry_points=[CommandHandler("register", register)],
+        entry_points=[
+            CommandHandler("register", register),
+            CommandHandler("bolo", register_bolo),
+        ],
         states={
             "USERNAME": [
                 MessageHandler(Filters.text & ~Filters.command, register_using_username)

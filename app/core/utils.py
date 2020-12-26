@@ -40,8 +40,10 @@ def setup_logging():
 def inject_db(function):
     def wrap_function(*args, **kwargs):
         with get_db() as db:
+            setattr(wrap_function, "db", db)
             return function(db, *args, **kwargs)
 
+    setattr(wrap_function, "db", None)
     return wrap_function
 
 
