@@ -1,0 +1,6 @@
+alembic
+pydantic
+PyMySQL
+python-dotenv
+python-telegram-bot
+sqlalchemy
