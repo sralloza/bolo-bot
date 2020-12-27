@@ -1,6 +1,8 @@
 alembic
+fastapi
 pydantic
 PyMySQL
 python-dotenv
 python-telegram-bot
 sqlalchemy
+a2wsgi
