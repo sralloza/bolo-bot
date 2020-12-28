@@ -6,15 +6,14 @@ from telegram.ext import (
     Updater,
 )
 
-from app.api.bot.bolo import get_ranking, register_bolo
-from app.api.bot.help import (
+from app.api.bot.account import (
     expecting_username_not_command,
     register,
     register_using_username,
-    send_welcome,
-    show_version,
     unregister,
 )
+from app.api.bot.bolo import get_ranking, register_bolo
+from app.api.bot.help import send_welcome, show_version
 from app.core.config import settings
 from app.utils import exception_handling
 

@@ -14,7 +14,7 @@ from telegram import User
 from app import crud
 from app.db.session import get_db
 
-from .config import settings
+from .core.config import settings
 
 logger = getLogger(__name__)
 
