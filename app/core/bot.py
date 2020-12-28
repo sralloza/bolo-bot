@@ -6,8 +6,8 @@ from telegram.ext import (
     Updater,
 )
 
-from app.api.bolo import get_ranking, register_bolo
-from app.api.help import (
+from app.api.bot.bolo import get_ranking, register_bolo
+from app.api.bot.help import (
     register,
     register_using_username,
     send_welcome,
