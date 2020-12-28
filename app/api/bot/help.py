@@ -6,7 +6,7 @@ from telegram.update import Update
 from app import __version__, crud
 from app.core.config import settings
 from app.core.exceptions import AlreadyExistsError
-from app.core.utils import inject_db
+from app.core.utils import generate_username_from_tg_user, inject_db
 from app.schemas.user import UserCreate
 
 
@@ -34,9 +34,13 @@ def register(db: Session, update: Update, context: CallbackContext):
 
     username = update.effective_user.username
     if username is None:
-        msg = "No tienes un nombre de usuario. ¿Cómo te registro?"
-        context.bot.send_message(chat_id=update.effective_chat.id, text=msg)
-        return "USERNAME"
+        if not settings.autogenerate_username:
+            msg = "No tienes un nombre de usuario. ¿Cómo te registro?"
+            context.bot.send_message(chat_id=update.effective_chat.id, text=msg)
+            return "USERNAME"
+
+        assert update.effective_user
+        username = generate_username_from_tg_user(db, update.effective_user)
 
     user = UserCreate(id=user_id, username=username)
     crud.user.create(db, obj_in=user)

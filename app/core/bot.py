@@ -8,12 +8,12 @@ from telegram.ext import (
 
 from app.api.bot.bolo import get_ranking, register_bolo
 from app.api.bot.help import (
+    expecting_username_not_command,
     register,
     register_using_username,
     send_welcome,
     show_version,
     unregister,
-    expecting_username_not_command,
 )
 from app.core.config import settings
 from app.core.utils import exception_handling
@@ -28,26 +28,30 @@ dispatcher.add_handler(CommandHandler("unregister", unregister))
 
 dispatcher.add_handler(CommandHandler("ranking", get_ranking))
 
-dispatcher.add_handler(
-    ConversationHandler(
-        entry_points=[
-            CommandHandler("register", register),
-            CommandHandler("bolo", register_bolo),
-        ],
-        states={
-            "USERNAME": [
-                MessageHandler(
-                    Filters.text & ~Filters.command, register_using_username
-                ),
-                MessageHandler(
-                    Filters.text & Filters.command,
-                    expecting_username_not_command,  # type:ignore
-                ),
+if settings.autogenerate_username:
+    dispatcher.add_handler(CommandHandler("register", register))
+    dispatcher.add_handler(CommandHandler("bolo", register_bolo))
+else:
+    dispatcher.add_handler(
+        ConversationHandler(
+            entry_points=[
+                CommandHandler("register", register),
+                CommandHandler("bolo", register_bolo),
             ],
-        },
-        fallbacks=[],
+            states={
+                "USERNAME": [
+                    MessageHandler(
+                        Filters.text & ~Filters.command, register_using_username
+                    ),
+                    MessageHandler(
+                        Filters.text & Filters.command,
+                        expecting_username_not_command,  # type:ignore
+                    ),
+                ],
+            },
+            fallbacks=[],
+        )
     )
-)
 # dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, echo))
 
 dispatcher.add_error_handler(exception_handling)

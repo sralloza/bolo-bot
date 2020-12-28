@@ -1,18 +1,35 @@
 import logging
 import traceback
+from hashlib import sha256
 from logging import getLogger
 from logging.handlers import TimedRotatingFileHandler
 from pathlib import Path
 from uuid import uuid4
 
 from fastapi import Request
+from sqlalchemy.orm.session import Session
 from starlette.responses import JSONResponse
+from telegram import User
 
+from app import crud
 from app.db.session import get_db
 
 from .config import settings
 
 logger = getLogger(__name__)
+
+
+def generate_username_from_tg_user(db: Session, tg_user: User):
+    username = tg_user.first_name
+
+    if tg_user.last_name:
+        username += f" {tg_user.last_name}"
+
+    if crud.user.get_by_username(db, username=username):
+        str_user = repr(vars(tg_user)).encode("utf8")
+        username += "-" + sha256(str_user).hexdigest()[:6]
+
+    return username
 
 
 def setup_logging():
