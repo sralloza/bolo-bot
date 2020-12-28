@@ -62,6 +62,15 @@ def register_using_username(db: Session, update: Update, context: CallbackContex
     return ConversationHandler.END
 
 
+def expecting_username_not_command(update: Update, context: CallbackContext):
+    if update.message.text == "/bolo":
+        current = context.user_data.get("bolo-pending", 0)
+        context.user_data["bolo-pending"] = current + 1
+
+    msg = "¿Cómo quieres que te registre?"
+    context.bot.send_message(chat_id=update.effective_chat.id, text=msg)
+
+
 @inject_db
 def unregister(db: Session, update: Update, context: CallbackContext):
     user_id = update.effective_user.id

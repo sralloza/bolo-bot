@@ -3,13 +3,15 @@ from telegram.ext.callbackcontext import CallbackContext
 from telegram.update import Update
 
 from app import crud
-from app.api.help import register
+from app.api.bot.help import register
 from app.core.emoji import pos_to_emoji
 from app.core.utils import inject_db
 
 
 @inject_db
-def register_bolo(db: Session, update: Update, context: CallbackContext):
+def register_bolo(
+    db: Session, update: Update, context: CallbackContext, bolos: int = 1
+):
     if not crud.user.get(db, id=update.effective_user.id):
         result = register(update, context)
 
@@ -19,9 +21,13 @@ def register_bolo(db: Session, update: Update, context: CallbackContext):
         assert register.db
         db = register.db
 
-    user = crud.user.register_bolo(db, id=update.effective_user.id)
+    user = crud.user.register_bolos(db, id=update.effective_user.id, bolos=bolos)
     pos = crud.user.get_user_position(db, id=user.id)
-    msg = f"Bolo Registrado.\nTienes actualmente {user.bolos} bolos.\nEstás en la posición {pos}."
+    msg = (
+        f"Bolo{'s' if bolos > 1 else ''} registrado{'s' if bolos > 1 else ''}.\n"
+        f"Tienes actualmente {user.bolos} "
+        f"bolo{'s' if user.bolos > 1 else ''}.\nEstás en la posición {pos}."
+    )
     context.bot.send_message(chat_id=update.effective_chat.id, text=msg)
 
 

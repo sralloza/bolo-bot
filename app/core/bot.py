@@ -13,6 +13,7 @@ from app.api.bot.help import (
     send_welcome,
     show_version,
     unregister,
+    expecting_username_not_command,
 )
 from app.core.config import settings
 from app.core.utils import exception_handling
@@ -35,7 +36,13 @@ dispatcher.add_handler(
         ],
         states={
             "USERNAME": [
-                MessageHandler(Filters.text & ~Filters.command, register_using_username)
+                MessageHandler(
+                    Filters.text & ~Filters.command, register_using_username
+                ),
+                MessageHandler(
+                    Filters.text & Filters.command,
+                    expecting_username_not_command,  # type:ignore
+                ),
             ],
         },
         fallbacks=[],
