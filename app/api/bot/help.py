@@ -6,8 +6,8 @@ from telegram.update import Update
 from app import __version__, crud
 from app.core.config import settings
 from app.core.exceptions import AlreadyExistsError
-from app.core.utils import generate_username_from_tg_user, inject_db
 from app.schemas.user import UserCreate
+from app.utils import generate_username_from_tg_user, inject_db
 
 
 def send_welcome(update: Update, context: CallbackContext):

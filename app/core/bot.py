@@ -16,7 +16,7 @@ from app.api.bot.help import (
     unregister,
 )
 from app.core.config import settings
-from app.core.utils import exception_handling
+from app.utils import exception_handling
 
 updater = Updater(token=settings.token_bot, use_context=True)
 dispatcher = updater.dispatcher

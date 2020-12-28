@@ -5,7 +5,7 @@ from fastapi import FastAPI
 
 from app.api.routes import router
 from app.core.bot import updater
-from app.core.utils import server_exception_handling
+from app.utils import server_exception_handling
 
 
 def create_app():

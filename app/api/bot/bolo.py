@@ -5,7 +5,7 @@ from telegram.update import Update
 from app import crud
 from app.api.bot.help import register
 from app.core.emoji import pos_to_emoji
-from app.core.utils import inject_db
+from app.utils import inject_db
 
 
 @inject_db
