@@ -59,6 +59,13 @@ def register_using_username(db: Session, update: Update, context: CallbackContex
 
     msg = f"Registrado correctamente como {username!r}"
     context.bot.send_message(chat_id=update.effective_chat.id, text=msg)
+    if context.user_data.get("bolo-pending", 0):
+        from app.api.bot.bolo import register_bolo
+
+        bolos_pending = context.user_data.get("bolo-pending", 0)
+        register_bolo(update, context, bolos=bolos_pending)
+        del context.user_data["bolo-pending"]
+
     return ConversationHandler.END
 
 

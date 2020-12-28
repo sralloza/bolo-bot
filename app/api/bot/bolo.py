@@ -16,6 +16,8 @@ def register_bolo(
         result = register(update, context)
 
         if isinstance(result, str):
+            bolos_pending = context.user_data.get("bolo-pending", 0)
+            context.user_data["bolo-pending"] = bolos_pending + 1
             return result
 
         assert register.db
