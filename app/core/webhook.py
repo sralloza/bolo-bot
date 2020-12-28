@@ -2,10 +2,11 @@ import json
 
 from telegram import Update
 
-from .bot import dispatcher
+from .bot import create_updater
 
 
 def webhook(data: dict):
-    update = Update.de_json(data, dispatcher.bot)
+    updater = create_updater()
+    update = Update.de_json(data, updater.bot)
     assert update
-    dispatcher.process_update(update)
+    updater.dispatcher.process_update(update)

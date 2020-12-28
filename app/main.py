@@ -4,7 +4,7 @@ from warnings import warn
 from fastapi import FastAPI
 
 from app.api.routes import router
-from app.core.bot import updater
+from app.core.bot import create_updater
 from app.utils import server_exception_handling
 
 
@@ -20,6 +20,7 @@ def main():
     warn(
         "Do not user updater.start_polling()\nUse REST API webhook", DeprecationWarning
     )
+    updater = create_updater()
     updater.start_polling()
     if system() == "Windows":
         updater.idle()
