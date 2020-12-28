@@ -1,4 +1,6 @@
-### Current commands
+## Current commands
+
+### Public
 
 - help - muestra una ayuda inicial
 - start - muestra una ayuda inicial
@@ -7,3 +9,7 @@
 - bolo - registra un bolo
 - ranking - muestra el ranking actual de bolos
 - version - muestra la versión actual del bot
+
+### Private
+
+- reset - resets the bolos database
