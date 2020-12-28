@@ -29,6 +29,7 @@ class Settings(BaseSettings):
     max_logs: int = 30
 
     admin: str = "@sralloza"
+    autogenerate_username: bool = True
 
 
 settings = Settings()
