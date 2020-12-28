@@ -40,6 +40,11 @@ class CRUDUser(CRUDBase[User, UserCreate, UserUpdate]):
         update_user = UserUpdate(bolos=user.bolos + 1)
         return self.update(db, db_obj=user, obj_in=update_user)
 
+    def register_bolos(self, db: Session, *, id: int, bolos: int):
+        user = self.get_or_404(db, id=id)
+        update_user = UserUpdate(bolos=user.bolos + bolos)
+        return self.update(db, db_obj=user, obj_in=update_user)
+
     def un_register_bolo(self, db: Session, *, id: int):
         user = self.get_or_404(db, id=id)
         update_user = UserUpdate(bolos=user.bolos - 1)
