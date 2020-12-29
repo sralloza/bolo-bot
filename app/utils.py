@@ -67,14 +67,14 @@ def inject_db(function):
 def exception_handling(update, context):
     exc = context.error
     tb = traceback.format_exc()
-    msg = f"{exc!r}\n{tb}"
+    chat_id = update.effective_chat.id
+    msg = f"Error detectado en el chat {chat_id}: {exc!r}\n{tb}"
 
     context.bot.send_message(
         chat_id=update.effective_chat.id,
-        text="Error en el servidor. Reenvía este mensaje "
-        f"al administrador del bot ({settings.admin})",
+        text=f"Error en el servidor. Notificado el administrador del bot ({settings.admin})",
     )
-    context.bot.send_message(chat_id=update.effective_chat.id, text=msg)
+    context.bot.send_message(chat_id=settings.admin_user_id, text=msg)
     logger.exception(exc)
 
 
