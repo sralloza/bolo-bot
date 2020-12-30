@@ -27,3 +27,5 @@ async def index(request: Request):
     except Exception as exc:
         logger.exception(exc)
         raise HTTPException(500, "Error in webhook, check logs")
+    finally:
+        logger.info("Data processed")
