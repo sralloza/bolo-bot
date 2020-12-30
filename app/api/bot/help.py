@@ -1,13 +1,7 @@
-from sqlalchemy.orm.session import Session
 from telegram.ext.callbackcontext import CallbackContext
-from telegram.ext.conversationhandler import ConversationHandler
 from telegram.update import Update
 
-from app import __version__, crud
-from app.core.config import settings
-from app.core.exceptions import AlreadyExistsError
-from app.schemas.user import UserCreate
-from app.utils import generate_username_from_tg_user, inject_db
+from app import __version__
 
 
 def send_welcome(update: Update, context: CallbackContext):
