@@ -50,7 +50,7 @@ def get_ranking(db: Session, update: Update, context: CallbackContext):
 
 @require_admin
 @inject_db
-def reset_bolo_count(db: Session, update: Update, context: CallbackContext):
+def reset_database(db: Session, update: Update, context: CallbackContext):
     reset_bolos(db)
     msg = "Database reset successfull"
     context.bot.send_message(chat_id=update.effective_chat.id, text=msg)

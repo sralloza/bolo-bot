@@ -7,5 +7,5 @@
 - bolo - registra un bolo
 - ranking - muestra el ranking actual de bolos
 - version - muestra la versión actual del bot
-- reset_bolo_count - [ADMIN] pone a 0 el contador de todos los usuarios
+- reset - [ADMIN] elimina todos los datos
 - remove_inactive - [ADMIN] elimina los usuarios con 0 bolos

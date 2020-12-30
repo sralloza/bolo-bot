@@ -13,7 +13,7 @@ from app.api.bot.account import (
     remove_inactive_users,
     unregister,
 )
-from app.api.bot.bolo import get_ranking, register_bolo, reset_bolo_count
+from app.api.bot.bolo import get_ranking, register_bolo, reset_database
 from app.api.bot.help import send_welcome, show_version
 from app.core.config import settings
 from app.utils import exception_handling
@@ -35,7 +35,7 @@ def create_updater():
     dispatcher.add_handler(CommandHandler("ranking", get_ranking))
 
     # Admin callbacks
-    dispatcher.add_handler(CommandHandler("reset_bolo_count", reset_bolo_count))
+    dispatcher.add_handler(CommandHandler("reset", reset_database))
     dispatcher.add_handler(CommandHandler("remove_inactive", remove_inactive_users))
 
     if settings.autogenerate_username:
