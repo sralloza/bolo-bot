@@ -14,7 +14,7 @@ from app.api.bot.account import (
     unregister,
 )
 from app.api.bot.bolo import get_ranking, register_bolo, reset_database
-from app.api.bot.help import send_welcome, show_version
+from app.api.bot.help import show_help, show_version
 from app.core.config import settings
 from app.utils import exception_handling
 
@@ -24,8 +24,8 @@ def create_updater():
     dispatcher = updater.dispatcher
 
     # Help callbacks
-    dispatcher.add_handler(CommandHandler("help", send_welcome))  # type: ignore
-    dispatcher.add_handler(CommandHandler("start", send_welcome))  # type: ignore
+    dispatcher.add_handler(CommandHandler("help", show_help))  # type: ignore
+    dispatcher.add_handler(CommandHandler("start", show_help))  # type: ignore
     dispatcher.add_handler(CommandHandler("version", show_version))  # type: ignore
 
     # Account callbacks
