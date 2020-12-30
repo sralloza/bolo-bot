@@ -32,7 +32,7 @@ class Settings(BaseSettings):
     developer: str = "@sralloza"
     developer_id: int = 752192090
 
-    admin_ids: List[int]
+    admin_ids: List[int] = []
     autogenerate_username: bool = True
 
 
