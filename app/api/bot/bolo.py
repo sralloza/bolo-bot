@@ -37,10 +37,14 @@ def register_bolo(
 @inject_db
 def get_ranking(db: Session, update: Update, context: CallbackContext):
     users = crud.user.get_ranking(db)
-    msg = "🎣 Ranking actual:\n"
-    msg += "\n".join(
-        f"{pos_to_emoji(i+1)}: {u.username} ({u.bolos})" for i, u in enumerate(users)
-    )
+    if not users:
+        msg = "No hay datos"
+    else:
+        msg = "🎣 Ranking actual:\n"
+        msg += "\n".join(
+            f"{pos_to_emoji(i+1)}: {u.username} ({u.bolos})"
+            for i, u in enumerate(users)
+        )
     context.bot.send_message(chat_id=update.effective_chat.id, text=msg)
 
 
