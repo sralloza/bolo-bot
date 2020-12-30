@@ -21,6 +21,7 @@ async def index(request: Request):
     if not isinstance(data, dict):
         raise HTTPException(500, "Invalid payload")
 
+    logger.info("Processing data: %s", data)
     try:
         return webhook(data)
     except Exception as exc:
