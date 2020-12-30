@@ -6,7 +6,7 @@ from app import crud
 from app.api.bot.account import register
 from app.core.bolo import reset_bolos
 from app.core.emoji import pos_to_emoji
-from app.utils import inject_db
+from app.utils import inject_db, require_admin
 
 
 @inject_db
@@ -44,6 +44,7 @@ def get_ranking(db: Session, update: Update, context: CallbackContext):
     context.bot.send_message(chat_id=update.effective_chat.id, text=msg)
 
 
+@require_admin
 @inject_db
 def reset_bolo_count(db: Session, update: Update, context: CallbackContext):
     reset_bolos(db)

@@ -36,23 +36,29 @@ class CRUDUser(CRUDBase[User, UserCreate, UserUpdate]):
         return db.query(self.model).order_by(self.model.bolos.desc()).limit(limit).all()
 
     def register_bolo(self, db: Session, *, id: int):
-        user = self.get_or_404(db, id=id)
-        update_user = UserUpdate(bolos=user.bolos + 1)
-        return self.update(db, db_obj=user, obj_in=update_user)
+        usr = self.get_or_404(db, id=id)
+        update_user = UserUpdate(bolos=usr.bolos + 1)
+        return self.update(db, db_obj=usr, obj_in=update_user)
 
     def register_bolos(self, db: Session, *, id: int, bolos: int):
-        user = self.get_or_404(db, id=id)
-        update_user = UserUpdate(bolos=user.bolos + bolos)
-        return self.update(db, db_obj=user, obj_in=update_user)
+        usr = self.get_or_404(db, id=id)
+        update_user = UserUpdate(bolos=usr.bolos + bolos)
+        return self.update(db, db_obj=usr, obj_in=update_user)
 
     def un_register_bolo(self, db: Session, *, id: int):
-        user = self.get_or_404(db, id=id)
-        update_user = UserUpdate(bolos=user.bolos - 1)
-        return self.update(db, db_obj=user, obj_in=update_user)
+        usr = self.get_or_404(db, id=id)
+        update_user = UserUpdate(bolos=usr.bolos - 1)
+        return self.update(db, db_obj=usr, obj_in=update_user)
 
     def get_user_position(self, db: Session, *, id: int) -> int:
-        user = self.get_or_404(db, id=id)
-        return self.get_ranking(db).index(user) + 1
+        usr = self.get_or_404(db, id=id)
+        return self.get_ranking(db).index(usr) + 1
+
+    def remove_inactive_users(self, db: Session):
+        usr = self.get_multi(db)
+        for user in usr:
+            if user.bolos == 0:
+                self.remove(db, id=user.id)
 
 
 user = CRUDUser(User)

@@ -6,7 +6,7 @@ from app import crud
 from app.core.config import settings
 from app.core.exceptions import AlreadyExistsError
 from app.schemas.user import UserCreate
-from app.utils import generate_username_from_tg_user, inject_db
+from app.utils import generate_username_from_tg_user, inject_db, require_admin
 
 
 @inject_db
@@ -17,7 +17,7 @@ def register(db: Session, update: Update, context: CallbackContext):
         msg = f"Ya estás registrado como {existing_user.username!r}.\n"
         msg += "Actualmente no está implementado el cambio del nombre de usuario."
         msg += "Si quieres cambiar tu nombre de usuario, espera a que se implemente "
-        msg += f"o contacta con el administrador ({settings.admin})"
+        msg += f"o contacta con el desarrollador ({settings.developer})"
         context.bot.send_message(chat_id=update.effective_chat.id, text=msg)
         return ConversationHandler.END
 
@@ -81,4 +81,12 @@ def unregister(db: Session, update: Update, context: CallbackContext):
 
     crud.user.remove(db, id=user_id)
     msg = f"Registros eliminados para el usuario {user.username!r}."
+    context.bot.send_message(chat_id=update.effective_chat.id, text=msg)
+
+
+@require_admin
+@inject_db
+def remove_inactive_users(db: Session, update: Update, context: CallbackContext):
+    crud.user.remove_inactive_users(db)
+    msg = "Usuarios inactivos eliminados"
     context.bot.send_message(chat_id=update.effective_chat.id, text=msg)

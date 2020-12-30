@@ -1,6 +1,7 @@
 import logging
 from enum import Enum
 from pathlib import Path
+from typing import List
 
 from pydantic import BaseSettings
 
@@ -28,8 +29,10 @@ class Settings(BaseSettings):
     logging_level: ValidLoggingLevel = ValidLoggingLevel.INFO
     max_logs: int = 30
 
-    admin: str = "@sralloza"
-    admin_user_id: int
+    developer: str = "@sralloza"
+    developer_id: int = 752192090
+
+    admin_ids: List[int]
     autogenerate_username: bool = True
 
 

@@ -9,7 +9,8 @@ from uuid import uuid4
 from fastapi import Request
 from sqlalchemy.orm.session import Session
 from starlette.responses import JSONResponse
-from telegram import User
+from telegram import Update, User
+from telegram.ext.callbackcontext import CallbackContext
 
 from app import crud
 from app.db.session import get_db
@@ -64,6 +65,25 @@ def inject_db(function):
     return wrap_function
 
 
+def require_admin(function):
+    def wrap_function(*args, **kwargs):
+        update: Update = kwargs.get("update")  # type:ignore
+        context: CallbackContext = kwargs.get("context")  # type:ignore
+
+        if update is None or context is None:
+            update, context = args
+
+        user_id = update.effective_user.id
+
+        if user_id not in settings.admin_ids and user_id != settings.developer_id:
+            msg = "No tienes permisos para ejecutar este comando"
+            context.bot.send_message(chat_id=update.effective_chat.id, text=msg)
+            return
+        return function(*args, **kwargs)
+
+    return wrap_function
+
+
 def exception_handling(update, context):
     exc = context.error
     tb = traceback.format_exc()
@@ -72,9 +92,9 @@ def exception_handling(update, context):
 
     context.bot.send_message(
         chat_id=update.effective_chat.id,
-        text=f"Error en el servidor. Notificado el administrador del bot ({settings.admin})",
+        text=f"Error en el servidor. Notificado el desarrollador del bot ({settings.developer})",
     )
-    context.bot.send_message(chat_id=settings.admin_user_id, text=msg)
+    context.bot.send_message(chat_id=settings.developer_id, text=msg)
     logger.exception(exc)
 
 
