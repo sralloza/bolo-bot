@@ -33,7 +33,6 @@ class Settings(BaseSettings):
     developer_id: int = 752192090
 
     admin_ids: List[int] = []
-    autogenerate_username: bool = True
 
 
 settings = Settings()
