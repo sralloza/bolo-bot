@@ -22,7 +22,7 @@ def show_ranking(
     else:
         msg = "🎣 Ranking actual:\n"
         msg += "\n".join(
-            f"{pos_to_emoji(i+1, total=len(users))}: {u.username} ({u.bolos})"
+            f"{pos_to_emoji(i+1)}: {u.username} ({u.bolos})"
             for i, u in enumerate(users)
         )
 
