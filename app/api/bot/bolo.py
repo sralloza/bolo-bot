@@ -5,7 +5,7 @@ from telegram.update import Update
 
 from app import crud
 from app.core.account import register_user
-from app.core.bolo import reset_bolos, show_ranking
+from app.core.bolo import reset_bolos, show_latest, show_ranking
 from app.core.bot import bot_command
 from app.utils import inject_db, require_admin
 
@@ -25,7 +25,7 @@ def register_bolo(db: Session, update: Update, context: CallbackContext):
     context.bot.send_message(chat_id=update.effective_chat.id, text=msg)
 
 
-@bot_command(r"top([\s_]?\d+)?", cls=MessageHandler, regex=True)
+@bot_command(r"/top([\s_]?\d+)?", cls=MessageHandler, regex=True)
 @inject_db
 def ranking(db: Session, update: Update, context: CallbackContext):
     text = update.message.text.replace("top", "").strip("/_ ")
@@ -61,3 +61,33 @@ def reset_database(db: Session, update: Update, context: CallbackContext):
     n = reset_bolos(db)
     msg = f"Eliminados {n} usuarios.\nBase de datos reiniciada correctamente"
     context.bot.send_message(chat_id=update.effective_chat.id, text=msg)
+
+
+@bot_command(r"/ultimos([\s_]?\d+)?", cls=MessageHandler, regex=True)
+@inject_db
+def latest(db: Session, update: Update, context: CallbackContext):
+    print(context.args)
+    text = update.message.text.replace("ultimos", "").strip("/_ ")
+    limit = 10
+
+    if text:
+        try:
+            limit = int(text)
+        except ValueError:
+            return context.bot.send_message(
+                chat_id=update.effective_chat.id, text="Número inválido: %r" % text
+            )
+
+    if limit > 50:
+        return context.bot.send_message(
+            chat_id=update.effective_chat.id,
+            text="No se pueden mostrar tantos usuarios",
+        )
+
+    if limit <= 0:
+        return context.bot.send_message(
+            chat_id=update.effective_chat.id,
+            text="No se pueden mostrar %s usuarios" % limit,
+        )
+
+    return show_latest(db, update, context, limit)

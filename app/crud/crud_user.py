@@ -35,6 +35,14 @@ class CRUDUser(CRUDBase[User, UserCreate, UserUpdate]):
     def get_ranking(self, db: Session, *, limit: int = 10) -> List[User]:
         return db.query(self.model).order_by(self.model.bolos.desc()).limit(limit).all()
 
+    def get_latest(self, db: Session, *, limit: int = 10) -> List[User]:
+        return (
+            db.query(self.model)
+            .order_by(self.model.latest_bolo.desc())
+            .limit(limit)
+            .all()
+        )
+
     def register_bolo(self, db: Session, *, id: int):
         usr = self.get_or_404(db, id=id)
         update_user = UserUpdate(bolos=usr.bolos + 1)
