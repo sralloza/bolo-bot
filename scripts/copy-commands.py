@@ -20,7 +20,7 @@ def copy_commands():
     filtered = []
     for line in commands_info.splitlines():
         if line.strip().startswith("-"):
-            line = re.sub(r"- `\/([\w]+)`", r"\1", line)
+            line = re.sub(r"- \/([\w]+)", r"\1", line).replace("\\_", "_")
             filtered.append(line)
 
     result = "\n".join(filtered)
