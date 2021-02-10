@@ -1,6 +1,7 @@
 from typing import Optional
 
 from telegram.ext import CommandHandler, Updater
+from telegram.ext.filters import Filters
 
 from app.core.config import settings
 from app.utils import exception_handling
@@ -10,16 +11,17 @@ class BotMemory:
     updater: Optional[Updater] = None
 
 
-def bot_command(command_name: str = None, cls=CommandHandler):
+def bot_command(command_name: str = None, cls=CommandHandler, regex=False):
     def decorator(func):
-        nonlocal command_name
-        if not command_name:
-            command_name = func.__name__
+        arg = command_name or func.__name__
 
         if not BotMemory.updater:
             create_bot()
 
-        BotMemory.updater.dispatcher.add_handler(cls(command_name, func))
+        if regex:
+            arg = Filters.regex(arg)
+
+        BotMemory.updater.dispatcher.add_handler(cls(arg, func))
         return func
 
     return decorator

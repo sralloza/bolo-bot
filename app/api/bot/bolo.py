@@ -1,6 +1,6 @@
 from sqlalchemy.orm.session import Session
 from telegram.ext.callbackcontext import CallbackContext
-from telegram.ext.regexhandler import RegexHandler
+from telegram.ext.messagehandler import MessageHandler
 from telegram.update import Update
 
 from app import crud
@@ -28,7 +28,7 @@ def register_bolo(
     context.bot.send_message(chat_id=update.effective_chat.id, text=msg)
 
 
-@bot_command(r"top([\s_]?\d+)?", cls=RegexHandler)
+@bot_command(r"top([\s_]?\d+)?", cls=MessageHandler, regex=True)
 @inject_db
 def get_ranking(db: Session, update: Update, context: CallbackContext):
     text = update.message.text.replace("top", "").strip("/_ ")
