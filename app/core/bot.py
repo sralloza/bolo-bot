@@ -1,18 +1,6 @@
-from telegram.ext import (
-    CommandHandler,
-    ConversationHandler,
-    Filters,
-    MessageHandler,
-    Updater,
-)
+from telegram.ext import CommandHandler, Updater
 
-from app.api.bot.account import (
-    expecting_username_not_command,
-    register,
-    register_using_username,
-    remove_inactive_users,
-    unregister,
-)
+from app.api.bot.account import register, remove_inactive_users, unregister
 from app.api.bot.bolo import get_ranking, register_bolo, reset_database
 from app.api.bot.help import show_help, show_version
 from app.core.config import settings
@@ -38,34 +26,11 @@ def create_updater():
     dispatcher.add_handler(CommandHandler("reset", reset_database))
     dispatcher.add_handler(CommandHandler("remove_inactive", remove_inactive_users))
 
-    if settings.autogenerate_username:
-        # Account callbacks
-        dispatcher.add_handler(CommandHandler("register", register))
+    # Account callbacks
+    dispatcher.add_handler(CommandHandler("register", register))
 
-        # Bolo callbacks
-        dispatcher.add_handler(CommandHandler("bolo", register_bolo))
-    else:
-        dispatcher.add_handler(
-            ConversationHandler(
-                entry_points=[
-                    CommandHandler("register", register),
-                    CommandHandler("bolo", register_bolo),
-                ],
-                states={
-                    "USERNAME": [
-                        MessageHandler(
-                            Filters.text & ~Filters.command, register_using_username
-                        ),
-                        MessageHandler(
-                            Filters.text & Filters.command,
-                            expecting_username_not_command,  # type:ignore
-                        ),
-                    ],
-                },
-                fallbacks=[],
-            )
-        )
-    # dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, echo))
+    # Bolo callbacks
+    dispatcher.add_handler(CommandHandler("bolo", register_bolo))
 
     # Error handler callback
     dispatcher.add_error_handler(exception_handling)

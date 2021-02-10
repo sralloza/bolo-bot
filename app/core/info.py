@@ -1,9 +1,10 @@
-from pydantic.error_wrappers import ValidationError
-from app.schemas.info import SuccessWebHookInfo
 from json import JSONDecodeError
 
 import requests
 from fastapi import HTTPException
+from pydantic.error_wrappers import ValidationError
+
+from app.schemas.info import SuccessWebHookInfo
 
 from .config import settings
 

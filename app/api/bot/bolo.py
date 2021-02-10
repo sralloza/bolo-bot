@@ -3,7 +3,7 @@ from telegram.ext.callbackcontext import CallbackContext
 from telegram.update import Update
 
 from app import crud
-from app.api.bot.account import register
+from app.core.account import register_user
 from app.core.bolo import reset_bolos
 from app.core.emoji import pos_to_emoji
 from app.utils import inject_db, require_admin
@@ -14,15 +14,7 @@ def register_bolo(
     db: Session, update: Update, context: CallbackContext, bolos: int = 1
 ):
     if not crud.user.get(db, id=update.effective_user.id):
-        result = register(update, context)
-
-        if isinstance(result, str):
-            bolos_pending = context.user_data.get("bolo-pending", 0)
-            context.user_data["bolo-pending"] = bolos_pending + 1
-            return result
-
-        assert register.db
-        db = register.db
+        register_user(db, update, context)
 
     user = crud.user.register_bolos(db, id=update.effective_user.id, bolos=bolos)
     pos = crud.user.get_user_position(db, id=user.id)

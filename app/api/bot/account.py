@@ -1,74 +1,17 @@
 from sqlalchemy.orm.session import Session
 from telegram.ext.callbackcontext import CallbackContext, Update
-from telegram.ext.conversationhandler import ConversationHandler
 
 from app import crud
-from app.core.config import settings
-from app.core.exceptions import AlreadyExistsError
-from app.schemas.user import UserCreate
-from app.utils import generate_username_from_tg_user, inject_db, require_admin
+from app.utils import inject_db, require_admin
 
 
-@inject_db
-def register(db: Session, update: Update, context: CallbackContext):
-    user_id = update.effective_user.id
-    existing_user = crud.user.get(db, id=user_id)
-    if existing_user:
-        msg = f"Ya estás registrado como {existing_user.username!r}.\n"
-        msg += "Actualmente no está implementado el cambio del nombre de usuario."
-        msg += "Si quieres cambiar tu nombre de usuario, espera a que se implemente "
-        msg += f"o contacta con el desarrollador ({settings.developer})"
-        context.bot.send_message(chat_id=update.effective_chat.id, text=msg)
-        return ConversationHandler.END
-
-    username = update.effective_user.username
-    if username is None:
-        if not settings.autogenerate_username:
-            msg = "No tienes un nombre de usuario. ¿Cómo te registro?"
-            context.bot.send_message(chat_id=update.effective_chat.id, text=msg)
-            return "USERNAME"
-
-        assert update.effective_user
-        username = generate_username_from_tg_user(db, update.effective_user)
-
-    user = UserCreate(id=user_id, username=username)
-    crud.user.create(db, obj_in=user)
-    msg = f"Registrado correctamente como {username!r}"
-    context.bot.send_message(chat_id=update.effective_chat.id, text=msg)
-    return ConversationHandler.END
-
-
-@inject_db
-def register_using_username(db: Session, update: Update, context: CallbackContext):
-    username = update.message.text
-    user_id = update.effective_user.id
-
-    user = UserCreate(id=user_id, username=username)
-    try:
-        crud.user.create(db, obj_in=user)
-    except AlreadyExistsError as exc:
-        context.bot.send_message(chat_id=update.effective_chat.id, text=str(exc))
-        return "USERNAME"
-
-    msg = f"Registrado correctamente como {username!r}"
-    context.bot.send_message(chat_id=update.effective_chat.id, text=msg)
-    if context.user_data.get("bolo-pending", 0):
-        from app.api.bot.bolo import register_bolo
-
-        bolos_pending = context.user_data.get("bolo-pending", 0)
-        register_bolo(update, context, bolos=bolos_pending)
-        del context.user_data["bolo-pending"]
-
-    return ConversationHandler.END
-
-
-def expecting_username_not_command(update: Update, context: CallbackContext):
-    if update.message.text == "/bolo":
-        current = context.user_data.get("bolo-pending", 0)
-        context.user_data["bolo-pending"] = current + 1
-
-    msg = "¿Cómo quieres que te registre?"
-    context.bot.send_message(chat_id=update.effective_chat.id, text=msg)
+def register(update: Update, context: CallbackContext):
+    msg = "_Comando eliminado_\nEn futuras versiones ni siquiera aparecerá "
+    msg += "este mensaje.\nAl no ser necesario ejecutar /register antes de /bolo, el "
+    msg += "comando /register ha sido eliminado."
+    context.bot.send_message(
+        chat_id=update.effective_chat.id, text=msg, parse_mode="markdown"
+    )
 
 
 @inject_db
