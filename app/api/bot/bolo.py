@@ -30,25 +30,26 @@ def register_bolo(db: Session, update: Update, context: CallbackContext):
 def ranking(db: Session, update: Update, context: CallbackContext):
     text = update.message.text.replace("top", "").strip("/_ ")
     limit = 10
+
     if text:
         try:
             limit = int(text)
         except ValueError:
-            context.bot.send_message(
+            return context.bot.send_message(
                 chat_id=update.effective_chat.id, text="Número inválido: %r" % text
             )
+
     if limit > 50:
-        context.bot.send_message(
+        return context.bot.send_message(
             chat_id=update.effective_chat.id,
             text="No se pueden mostrar tantos usuarios",
         )
-        limit = 10
+
     if limit <= 0:
-        context.bot.send_message(
+        return context.bot.send_message(
             chat_id=update.effective_chat.id,
             text="No se pueden mostrar %s usuarios" % limit,
         )
-        limit = 10
 
     return show_ranking(db, update, context, limit)
 
