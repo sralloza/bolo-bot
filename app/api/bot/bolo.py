@@ -27,7 +27,7 @@ def register_bolo(db: Session, update: Update, context: CallbackContext):
 
 @bot_command(r"top([\s_]?\d+)?", cls=MessageHandler, regex=True)
 @inject_db
-def get_ranking(db: Session, update: Update, context: CallbackContext):
+def ranking(db: Session, update: Update, context: CallbackContext):
     text = update.message.text.replace("top", "").strip("/_ ")
     limit = 10
     if text:
@@ -37,7 +37,7 @@ def get_ranking(db: Session, update: Update, context: CallbackContext):
             context.bot.send_message(
                 chat_id=update.effective_chat.id, text="Número inválido: %r" % text
             )
-    if limit > 100:
+    if limit > 50:
         context.bot.send_message(
             chat_id=update.effective_chat.id,
             text="No se pueden mostrar tantos usuarios",
