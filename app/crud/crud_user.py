@@ -50,5 +50,8 @@ class CRUDUser(CRUDBase[User, UserCreate, UserUpdate]):
             if user.bolos == 0:
                 self.remove(db, id=user.id)
 
+    def reset_database(self, db: Session):
+        return db.query(self.model).delete()
+
 
 user = CRUDUser(User)

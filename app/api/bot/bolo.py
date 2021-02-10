@@ -57,6 +57,6 @@ def get_ranking(db: Session, update: Update, context: CallbackContext):
 @require_admin
 @inject_db
 def reset_database(db: Session, update: Update, context: CallbackContext):
-    reset_bolos(db)
-    msg = "Base de datos reiniciada correctamente"
+    n = reset_bolos(db)
+    msg = f"Eliminados {n} usuarios.\nBase de datos reiniciada correctamente"
     context.bot.send_message(chat_id=update.effective_chat.id, text=msg)
