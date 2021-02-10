@@ -5,10 +5,12 @@ from telegram.update import Update
 from app import crud
 from app.core.account import register_user
 from app.core.bolo import reset_bolos
+from app.core.bot import bot_command
 from app.core.emoji import pos_to_emoji
 from app.utils import inject_db, require_admin
 
 
+@bot_command("bolo")
 @inject_db
 def register_bolo(
     db: Session, update: Update, context: CallbackContext, bolos: int = 1
@@ -26,6 +28,7 @@ def register_bolo(
     context.bot.send_message(chat_id=update.effective_chat.id, text=msg)
 
 
+@bot_command("ranking")
 @inject_db
 def get_ranking(db: Session, update: Update, context: CallbackContext):
     users = crud.user.get_ranking(db)
@@ -40,9 +43,10 @@ def get_ranking(db: Session, update: Update, context: CallbackContext):
     context.bot.send_message(chat_id=update.effective_chat.id, text=msg)
 
 
+@bot_command("reset")
 @require_admin
 @inject_db
 def reset_database(db: Session, update: Update, context: CallbackContext):
     reset_bolos(db)
-    msg = "Database reset successfull"
+    msg = "Base de datos reiniciada correctamente"
     context.bot.send_message(chat_id=update.effective_chat.id, text=msg)
