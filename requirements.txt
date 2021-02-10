@@ -1,5 +1,6 @@
 a2wsgi
 alembic
+colorama
 fastapi
 pydantic
 PyMySQL
@@ -7,3 +8,4 @@ python-dotenv
 python-telegram-bot
 requests
 sqlalchemy
+typer
