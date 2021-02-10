@@ -1,5 +1,6 @@
 import logging
 import traceback
+from functools import wraps
 from hashlib import sha256
 from logging import getLogger
 from logging.handlers import TimedRotatingFileHandler
@@ -56,6 +57,7 @@ def setup_logging():
 
 
 def inject_db(function):
+    @wraps(function)
     def wrap_function(*args, **kwargs):
         with get_db() as db:
             setattr(wrap_function, "db", db)
