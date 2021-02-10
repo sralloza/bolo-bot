@@ -13,7 +13,7 @@ from app.core.config import settings
 @bot_command("help")
 def show_help(update: Update, context: CallbackContext):
     msg = Path(__file__).parent.parent.parent.with_name("commands.md").read_text("utf8")
-    msg = msg.format(developer = settings.developer)
+    msg = msg.format(developer=settings.developer)
     context.bot.send_message(
         chat_id=update.effective_chat.id, text=msg, parse_mode=ParseMode.MARKDOWN
     )
