@@ -10,7 +10,7 @@ class BotMemory:
     updater: Optional[Updater] = None
 
 
-def bot_command(command_name: str = None):
+def bot_command(command_name: str = None, cls=CommandHandler):
     def decorator(func):
         nonlocal command_name
         if not command_name:
@@ -19,7 +19,7 @@ def bot_command(command_name: str = None):
         if not BotMemory.updater:
             create_bot()
 
-        BotMemory.updater.dispatcher.add_handler(CommandHandler(command_name, func))
+        BotMemory.updater.dispatcher.add_handler(cls(command_name, func))
         return func
 
     return decorator
