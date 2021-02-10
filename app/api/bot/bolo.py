@@ -1,12 +1,12 @@
 from sqlalchemy.orm.session import Session
 from telegram.ext.callbackcontext import CallbackContext
+from telegram.ext.regexhandler import RegexHandler
 from telegram.update import Update
 
 from app import crud
 from app.core.account import register_user
-from app.core.bolo import reset_bolos
+from app.core.bolo import reset_bolos, show_ranking
 from app.core.bot import bot_command
-from app.core.emoji import pos_to_emoji
 from app.utils import inject_db, require_admin
 
 
@@ -28,19 +28,32 @@ def register_bolo(
     context.bot.send_message(chat_id=update.effective_chat.id, text=msg)
 
 
-@bot_command("ranking")
+@bot_command(r"top([\s_]?\d+)?", cls=RegexHandler)
 @inject_db
 def get_ranking(db: Session, update: Update, context: CallbackContext):
-    users = crud.user.get_ranking(db)
-    if not users:
-        msg = "No hay datos"
-    else:
-        msg = "🎣 Ranking actual:\n"
-        msg += "\n".join(
-            f"{pos_to_emoji(i+1)}: {u.username} ({u.bolos})"
-            for i, u in enumerate(users)
+    text = update.message.text.replace("top", "").strip("/_ ")
+    limit = 10
+    if text:
+        try:
+            limit = int(text)
+        except ValueError:
+            context.bot.send_message(
+                chat_id=update.effective_chat.id, text="Número inválido: %r" % text
+            )
+    if limit > 100:
+        context.bot.send_message(
+            chat_id=update.effective_chat.id,
+            text="No se pueden mostrar tantos usuarios",
         )
-    context.bot.send_message(chat_id=update.effective_chat.id, text=msg)
+        limit = 10
+    if limit <= 0:
+        context.bot.send_message(
+            chat_id=update.effective_chat.id,
+            text="No se pueden mostrar %s usuarios" % limit,
+        )
+        limit = 10
+
+    return show_ranking(db, update, context, limit)
 
 
 @bot_command("reset")
