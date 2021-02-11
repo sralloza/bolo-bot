@@ -9,6 +9,7 @@ from app.core.bot import bot_command
 from app.core.config import settings
 
 
+@bot_command("ayuda")
 @bot_command("start")
 @bot_command("help")
 def show_help(update: Update, context: CallbackContext):
