@@ -5,6 +5,7 @@ Bot diseñado para registrar los fracasos de la pesca de @carpfishingespana.
 *Comandos:*
 
 - /help - muestra una ayuda inicial
+- /ayuda - muestra una ayuda inicial
 - /start - muestra una ayuda inicial
 - /register - *comando eliminado* (en futuras versiones ni siquiera existirá)
 - /unregister - elimina al usuario que lo ejecute de la base de datos
