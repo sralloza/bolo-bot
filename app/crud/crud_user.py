@@ -52,7 +52,7 @@ class CRUDUser(CRUDBase[User, UserCreate, UserUpdate]):
 
     def get_user_position(self, db: Session, *, id: int) -> int:
         usr = self.get_or_404(db, id=id)
-        return self.get_ranking(db).index(usr) + 1
+        return self.get_ranking(db, limit=99999999).index(usr) + 1
 
     def remove_inactive_users(self, db: Session):
         usr = self.get_multi(db)
