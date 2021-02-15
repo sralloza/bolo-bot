@@ -1,3 +1,5 @@
+import re
+
 from sqlalchemy.orm.session import Session
 from telegram.ext.callbackcontext import CallbackContext
 from telegram.ext.messagehandler import MessageHandler
@@ -29,7 +31,7 @@ def register_bolo(db: Session, update: Update, context: CallbackContext):
 @inject_db
 def ranking(db: Session, update: Update, context: CallbackContext):
     text = update.message.text.replace("top", "").strip("/_ ")
-    text = text.replace(f"@{context.bot.username}", "")
+    text = re.sub(f"@{context.bot.username}", "", text, flags=re.I)
     limit = 10
 
     if text:
@@ -68,7 +70,7 @@ def reset_database(db: Session, update: Update, context: CallbackContext):
 @inject_db
 def latest(db: Session, update: Update, context: CallbackContext):
     text = update.message.text.replace("ultimos", "").strip("/_ ")
-    text = text.replace(f"@{context.bot.username}", "")
+    text = re.sub(f"@{context.bot.username}", "", text, flags=re.I)
     limit = 10
 
     if text:
