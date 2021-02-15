@@ -67,8 +67,8 @@ def reset_database(db: Session, update: Update, context: CallbackContext):
 @bot_command(r"/ultimos([\s_]?\d+)?", cls=MessageHandler)
 @inject_db
 def latest(db: Session, update: Update, context: CallbackContext):
-    print(context.args)
     text = update.message.text.replace("ultimos", "").strip("/_ ")
+    text = text.replace(f"@{context.bot.username}", "")
     limit = 10
 
     if text:
