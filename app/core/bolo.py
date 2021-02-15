@@ -8,9 +8,7 @@ from .emoji import pos_to_emoji
 
 
 def reset_bolos(db: Session):
-    users = crud.user.get_multi(db, limit=100000)
-    for user in users:
-        crud.user.remove(db, id=user.id)
+    return crud.user.reset_database(db)
 
 
 def show_ranking(
@@ -22,8 +20,22 @@ def show_ranking(
     else:
         msg = "🎣 Ranking actual:\n"
         msg += "\n".join(
-            f"{pos_to_emoji(i+1, total=len(users))}: {u.username} ({u.bolos})"
-            for i, u in enumerate(users)
+            f"{pos_to_emoji(i)}: {u.username} ({u.bolos})"
+            for i, u in enumerate(users, start=1)
+        )
+
+    context.bot.send_message(chat_id=update.effective_chat.id, text=msg)
+
+
+def show_latest(db: Session, update: Update, context: CallbackContext, limit: int = 10):
+    users = crud.user.get_latest(db, limit=limit)
+    if not users:
+        msg = "No hay datos"
+    else:
+        msg = "🎣 Últimos bolos:\n"
+        msg += "\n".join(
+            f"{pos_to_emoji(i, emoji_enabled=False)}: [{u.latest_bolo}] {u.username} ({u.bolos})"
+            for i, u in enumerate(users, start=1)
         )
 
     context.bot.send_message(chat_id=update.effective_chat.id, text=msg)

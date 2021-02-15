@@ -1,9 +1,5 @@
-def pos_to_emoji(pos: int, total: int) -> str:
-    total = total = 5
+def pos_to_emoji(pos: int, emoji_enabled=True) -> str:
     emojis = {1: "🥇", 2: "🥈", 3: "🥉"}
-    if pos in emojis:
-        result = emojis[pos]
-        if total - 4 > 0:
-            result += " " * (total - 4)
-        return result
-    return f"{pos:^{total}d}"
+    if pos in emojis and emoji_enabled:
+        return emojis[pos] + " "
+    return f"{pos:^5d}"

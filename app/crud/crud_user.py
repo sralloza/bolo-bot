@@ -1,5 +1,6 @@
 import logging
-from typing import List
+from datetime import datetime
+from typing import List, Optional
 
 from sqlalchemy.orm.session import Session
 
@@ -29,36 +30,37 @@ class CRUDUser(CRUDBase[User, UserCreate, UserUpdate]):
 
         return super().update(db, db_obj=db_obj, obj_in=obj_in)
 
-    def get_by_username(self, db: Session, *, username: str) -> User:
+    def get_by_username(self, db: Session, *, username: str) -> Optional[User]:
         return db.query(self.model).filter_by(username=username).first()
 
     def get_ranking(self, db: Session, *, limit: int = 10) -> List[User]:
         return db.query(self.model).order_by(self.model.bolos.desc()).limit(limit).all()
 
+    def get_latest(self, db: Session, *, limit: int = 10) -> List[User]:
+        return (
+            db.query(self.model)
+            .order_by(self.model.latest_bolo.desc())
+            .limit(limit)
+            .all()
+        )
+
     def register_bolo(self, db: Session, *, id: int):
         usr = self.get_or_404(db, id=id)
-        update_user = UserUpdate(bolos=usr.bolos + 1)
-        return self.update(db, db_obj=usr, obj_in=update_user)
-
-    def register_bolos(self, db: Session, *, id: int, bolos: int):
-        usr = self.get_or_404(db, id=id)
-        update_user = UserUpdate(bolos=usr.bolos + bolos)
-        return self.update(db, db_obj=usr, obj_in=update_user)
-
-    def un_register_bolo(self, db: Session, *, id: int):
-        usr = self.get_or_404(db, id=id)
-        update_user = UserUpdate(bolos=usr.bolos - 1)
+        update_user = UserUpdate(bolos=usr.bolos + 1, latest_bolo=datetime.now())
         return self.update(db, db_obj=usr, obj_in=update_user)
 
     def get_user_position(self, db: Session, *, id: int) -> int:
         usr = self.get_or_404(db, id=id)
-        return self.get_ranking(db, limit=99999999).index(usr) + 1
+        return self.get_ranking(db, limit=10 ** 6).index(usr) + 1
 
     def remove_inactive_users(self, db: Session):
         usr = self.get_multi(db)
         for user in usr:
             if user.bolos == 0:
                 self.remove(db, id=user.id)
+
+    def reset_database(self, db: Session):
+        return db.query(self.model).delete()
 
 
 user = CRUDUser(User)
