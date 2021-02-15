@@ -1,4 +1,5 @@
 import logging
+from datetime import datetime
 from typing import List, Optional
 
 from sqlalchemy.orm.session import Session
@@ -45,7 +46,7 @@ class CRUDUser(CRUDBase[User, UserCreate, UserUpdate]):
 
     def register_bolo(self, db: Session, *, id: int):
         usr = self.get_or_404(db, id=id)
-        update_user = UserUpdate(bolos=usr.bolos + 1)
+        update_user = UserUpdate(bolos=usr.bolos + 1, latest_bolo=datetime.now())
         return self.update(db, db_obj=usr, obj_in=update_user)
 
     def get_user_position(self, db: Session, *, id: int) -> int:
