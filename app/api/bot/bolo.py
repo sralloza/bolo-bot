@@ -25,10 +25,11 @@ def register_bolo(db: Session, update: Update, context: CallbackContext):
     context.bot.send_message(chat_id=update.effective_chat.id, text=msg)
 
 
-@bot_command(r"/top([\s_]?\d+)?", cls=MessageHandler, regex=True)
+@bot_command(r"/top([\s_]?\d+)?", cls=MessageHandler)
 @inject_db
 def ranking(db: Session, update: Update, context: CallbackContext):
     text = update.message.text.replace("top", "").strip("/_ ")
+    text = text.replace(f"@{context.bot.username}", "")
     limit = 10
 
     if text:
@@ -63,7 +64,7 @@ def reset_database(db: Session, update: Update, context: CallbackContext):
     context.bot.send_message(chat_id=update.effective_chat.id, text=msg)
 
 
-@bot_command(r"/ultimos([\s_]?\d+)?", cls=MessageHandler, regex=True)
+@bot_command(r"/ultimos([\s_]?\d+)?", cls=MessageHandler)
 @inject_db
 def latest(db: Session, update: Update, context: CallbackContext):
     print(context.args)
