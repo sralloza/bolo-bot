@@ -68,6 +68,7 @@ def inject_db(function):
 
 
 def require_admin(function):
+    @wraps(function)
     def wrap_function(*args, **kwargs):
         update: Update = kwargs.get("update")  # type:ignore
         context: CallbackContext = kwargs.get("context")  # type:ignore
