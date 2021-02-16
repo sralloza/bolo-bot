@@ -32,9 +32,10 @@ def show_version(update: Update, context: CallbackContext):
 
 @bot_command(Filters.status_update.new_chat_members, cls=MessageHandler)
 def welcome(update: Update, context: CallbackContext):
+    user = update.message.new_chat_members[0]
     msg = (
-        "Bienvenido, preséntate y lee las normas. En este grupo se"
-        " trata la pesca del _carpfishing_ y las locuras varias de sus"
+        f"Bienvenido `{user.first_name}`, preséntate y lee las normas. En este "
+        "grupo se trata la pesca del _carpfishing_ y las locuras varias de sus"
         " participantes, ponte cómod@ y disfruta del show."
     )
     context.bot.send_message(
@@ -45,8 +46,14 @@ def welcome(update: Update, context: CallbackContext):
 @bot_command(Filters.status_update.left_chat_member, cls=MessageHandler)
 @inject_db
 def say_goodbye(db: Session, update: Update, context: CallbackContext):
-    msg = "Fue un placer tu estancia, pero por abandonar esta secta te caerá la maldición del bolo"
-    context.bot.send_message(chat_id=update.effective_chat.id, text=msg)
+    user = update.message.left_chat_member
+    msg = (
+        f"Fue un placer tu estancia `{user.username}`, pero"
+        " por abandonar esta secta te caerá la maldición del bolo"
+    )
+    context.bot.send_message(
+        chat_id=update.effective_chat.id, text=msg, parse_mode="markdown"
+    )
 
     user_id = update.message.left_chat_member.id
     user = crud.user.get(db, id=user_id)
@@ -55,7 +62,7 @@ def say_goodbye(db: Session, update: Update, context: CallbackContext):
 
     crud.user.remove(db, id=user_id)
     msg = (
-        f"Eliminados los bolos de {user.username}, ahora hay "
+        f"Eliminados los bolos de `{user.username}`, ahora hay "
         "más espacio para los bolos del resto"
     )
-    context.bot.send_message(chat_id=update.effective_chat.id, text=msg)
+    context.bot.send_message(chat_id=update.effective_chat.id, text=msg, parse_mode="markdown")
