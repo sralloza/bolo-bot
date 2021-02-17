@@ -1,7 +1,6 @@
 - /help - muestra una ayuda inicial
 - /ayuda - muestra una ayuda inicial
 - /start - muestra una ayuda inicial
-- /register - comando eliminado
 - /bolo - registra un bolo
 - /top - muestra el TOP X actual de bolos
 - /ultimos - muestra los últimos N bolos
