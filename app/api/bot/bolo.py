@@ -9,7 +9,7 @@ from app import crud
 from app.core.account import register_user
 from app.core.bolo import reset_bolos, show_latest, show_ranking
 from app.core.bot import bot_command
-from app.utils import inject_db, require_admin
+from app.utils import get_remaining_text_after_command, inject_db, require_admin
 
 
 @bot_command("bolo")
@@ -30,8 +30,7 @@ def register_bolo(db: Session, update: Update, context: CallbackContext):
 @bot_command(r"/top([\s_]?\d+)?", cls=MessageHandler)
 @inject_db
 def ranking(db: Session, update: Update, context: CallbackContext):
-    text = update.message.text.replace("top", "").strip("/_ ")
-    text = re.sub(f"@{context.bot.username}", "", text, flags=re.I)
+    text = get_remaining_text_after_command(update, context, "top")
     limit = 10
 
     if text:
@@ -69,8 +68,7 @@ def reset_database(db: Session, update: Update, context: CallbackContext):
 @bot_command(r"/ultimos([\s_]?\d+)?", cls=MessageHandler)
 @inject_db
 def latest(db: Session, update: Update, context: CallbackContext):
-    text = update.message.text.replace("ultimos", "").strip("/_ ")
-    text = re.sub(f"@{context.bot.username}", "", text, flags=re.I)
+    text = get_remaining_text_after_command(update, context, "ultimos")
     limit = 10
 
     if text:

@@ -5,19 +5,11 @@ from typing import List
 import typer
 from telegram import BotCommand
 
-from app.core.bot import create_updater
-
-try:
-    import pyperclip
-except ImportError:
-    typer.secho("You need to install pyperclip", fg="bright_red")
-    raise typer.Abort()
-
 app = typer.Typer(add_completion=False, help="Bot's commands manager")
 
 
 def get_commands() -> List[BotCommand]:
-    commands_path = Path(__file__).parent.with_name("commands.md")
+    commands_path = Path(__file__).absolute().parent.with_name("commands-botfather.md")
     commands_info = commands_path.read_text("utf8")
 
     commands = []
@@ -33,6 +25,8 @@ def get_commands() -> List[BotCommand]:
 @app.command("copy")
 def copy_commands():
     """Copies the command in a format @BotFather understands."""
+    import pyperclip
+
     commands = get_commands()
     result = "\n".join([f"{x.command} - {x.description}" for x in commands])
     pyperclip.copy(result)
@@ -42,6 +36,8 @@ def copy_commands():
 @app.command("update")
 def update_commands():
     """Updates the bot's commands via Telegram API."""
+    from app.core.bot import create_updater
+
     bot = create_updater().bot
     commands = get_commands()
     bot.set_my_commands(commands)

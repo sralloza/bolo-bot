@@ -1,4 +1,5 @@
 import logging
+import re
 import traceback
 from functools import wraps
 from hashlib import sha256
@@ -85,6 +86,14 @@ def require_admin(function):
         return function(*args, **kwargs)
 
     return wrap_function
+
+
+def get_remaining_text_after_command(
+    update: Update, context: CallbackContext, command: str
+) -> str:
+    text = update.message.text.replace(command, "").strip("/_ ")
+    text = re.sub(f"@{context.bot.username}", "", text, flags=re.I)
+    return text
 
 
 def exception_handling(update, context):
