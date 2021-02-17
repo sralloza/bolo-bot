@@ -50,7 +50,10 @@ def send_message(
         if clipboard:
             import pyperclip
 
-            message = pyperclip.paste()  # type:ignore
+            try:
+                message = pyperclip.paste()  # type:ignore
+            except pyperclip.PyperclipException:
+                raise ClickException("pyperclip not supported")
         else:
             message = typer.edit("")
 
