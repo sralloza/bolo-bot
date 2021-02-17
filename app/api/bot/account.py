@@ -7,16 +7,6 @@ from app.utils import get_remaining_text_after_command, inject_db, require_admin
 
 
 @bot_command()
-def register(update: Update, context: CallbackContext):
-    msg = "_Comando eliminado_\nEn futuras versiones ni siquiera aparecerá "
-    msg += "este mensaje.\nAl no ser necesario ejecutar /register antes de /bolo, el "
-    msg += "comando /register ha sido eliminado."
-    context.bot.send_message(
-        chat_id=update.effective_chat.id, text=msg, parse_mode="markdown"
-    )
-
-
-@bot_command()
 @require_admin
 @inject_db
 def unregister(db: Session, update: Update, context: CallbackContext):
