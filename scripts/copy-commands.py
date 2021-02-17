@@ -9,7 +9,7 @@ app = typer.Typer(add_completion=False, help="Bot's commands manager")
 
 
 def get_commands() -> List[BotCommand]:
-    commands_path = Path(__file__).absolute().parent.with_name("commands.md")
+    commands_path = Path(__file__).absolute().parent.with_name("commands-botfather.md")
     commands_info = commands_path.read_text("utf8")
 
     commands = []
