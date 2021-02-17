@@ -23,7 +23,8 @@ helps = {
     "production": "use the production bot",
 }
 mapper_path = (
-    Path(__file__).parent.with_name("app") / "db/files/broadcast_channels.json"
+    Path(__file__).absolute().parent.with_name("app")
+    / "db/files/broadcast_channels.json"
 )
 mapper = parse_file_as(List[BroadcastChannel], mapper_path)
 valid_names = [x.name for x in mapper]
