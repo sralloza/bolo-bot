@@ -20,6 +20,7 @@ helps = {
     "clipboard": "take the message from the clipboard",
     "yes": "skip message confirmation",
     "enable_wp": "enable web page preview",
+    "production": "use the production bot",
 }
 mapper_path = (
     Path(__file__).parent.with_name("app") / "db/files/broadcast_channels.json"
@@ -43,8 +44,11 @@ def send_message(
     clipboard: bool = typer.Option(False, "--clipboard", "-c", help=helps["clipboard"]),
     yes: bool = typer.Option(False, "--yes", "-y", help=helps["yes"]),
     enable_web_page_preview: bool = typer.Option(False, help=helps["enable_wp"]),
+    production: bool = typer.Option(
+        False, "--prod", "--production", help=helps["production"]
+    ),
 ):
-    from app.core.bot import create_updater
+    from app.core.config import settings
 
     if message is None:
         if clipboard:
@@ -74,7 +78,13 @@ def send_message(
 
     chat_id = get_chat_id_from_receiver(to)
 
-    bot: Bot = create_updater().bot
+    if production:
+        if not settings.prod_token_bot:
+            raise ClickException("settings.prod_token_bot not set")
+
+        bot = Bot(settings.prod_token_bot)
+    else:
+        bot = Bot(settings.token_bot)
     bot.send_message(
         chat_id=chat_id,
         text=message,

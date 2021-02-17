@@ -1,7 +1,7 @@
 import logging
 from enum import Enum
 from pathlib import Path
-from typing import List
+from typing import List, Optional
 
 from pydantic import BaseSettings
 
@@ -23,6 +23,7 @@ class Settings(BaseSettings):
         env_file_encoding = "utf-8"
 
     token_bot: str
+    prod_token_bot: Optional[str]
     sqlalchemy_database_url: str
 
     log_path: Path = Path(__file__).parent.parent.with_name("logs").joinpath("gale.log")
