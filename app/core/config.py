@@ -28,7 +28,6 @@ class Settings(BaseSettings):
 
     log_path: Path = Path(__file__).parent.parent.with_name("logs").joinpath("gale.log")
     logging_level: ValidLoggingLevel = ValidLoggingLevel.INFO
-    max_logs: int = 30
 
     developer: str = "@sralloza"
     developer_id: int = 752192090
