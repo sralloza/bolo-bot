@@ -3,8 +3,7 @@ import re
 import traceback
 from functools import wraps
 from hashlib import sha256
-from logging import getLogger
-from logging.handlers import FileHandler
+from logging import getLogger, FileHandler
 from pathlib import Path
 from uuid import uuid4
 
